@@ -1,9 +1,42 @@
-document.getElementById('drag1').ondragstart = (event) => {
-  event.preventDefault()
-  window.electron.startDrag('drag-and-drop-1.md')
-}
+window.addEventListener('DOMContentLoaded', () => {
+  const dropArea = document.getElementById('droparea');
 
-document.getElementById('drag2').ondragstart = (event) => {
-  event.preventDefault()
-  window.electron.startDrag('drag-and-drop-2.md')
-}
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+    dropArea?.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ['dragenter', 'dragover'].forEach((eventName) => {
+    dropArea?.addEventListener(eventName, highlight, false);
+  });
+
+  ['dragleave', 'drop'].forEach((eventName) => {
+    dropArea?.addEventListener(eventName, unhighlight, false);
+  });
+
+  function highlight() {
+    dropArea?.classList.add('highlight');
+  }
+
+  function unhighlight() {
+    dropArea?.classList.remove('highlight');
+  }
+
+  dropArea?.addEventListener('drop', handleDrop, false);
+
+  async function handleDrop(e) {
+    e.preventDefault();
+    unhighlight();
+    const files = e.dataTransfer?.files;
+
+    if (files) {
+      // Send a message to the main process to process the Excel file
+      console.log(files[0].name)
+      electronAPI.send('processFile', files[0].path);
+    }
+  }
+});

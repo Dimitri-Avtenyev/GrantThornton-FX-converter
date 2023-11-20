@@ -1,7 +1,10 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electron', {
-  startDrag: (fileName) => {
-    ipcRenderer.send('ondragstart', fileName)
-  }
-})
+contextBridge.exposeInMainWorld('electronAPI', {
+  send: (channel, data) => {
+    ipcRenderer.send(channel, data);
+  },
+  receive: (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  },
+});

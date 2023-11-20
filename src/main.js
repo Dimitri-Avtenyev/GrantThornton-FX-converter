@@ -1,48 +1,46 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('node:path')
-const fs = require('node:fs')
-const https = require('node:https')
+const { app, BrowserWindow, ipcMain } = require('electron');
 
-function createWindow () {
-  const win = new BrowserWindow({
+let mainWindow;
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
+      nodeIntegration: false, // This is important to disable nodeIntegration in the renderer process
+      preload: __dirname + '/preload.js', // Path to preload script
+    },
+  });
 
-  win.loadFile('../index.html')
+  mainWindow.loadFile('../index.html');
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 }
 
-const iconName = path.join(__dirname, 'iconForDragAndDrop.png')
-const icon = fs.createWriteStream(iconName)
+app.whenReady().then(() => {
+  createWindow();
 
-// Create a new file to copy - you can also copy existing files.
-fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
-fs.writeFileSync(path.join(__dirname, 'drag-and-drop-2.md'), '# Second file to test drag and drop')
-
-https.get('https://img.icons8.com/ios/452/drag-and-drop.png', (response) => {
-  response.pipe(icon)
-})
-
-app.whenReady().then(createWindow)
-
-ipcMain.on('ondragstart', (event, filePath) => {
-  event.sender.startDrag({
-    file: path.join(__dirname, filePath),
-    icon: iconName
-  })
-})
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createWindow();
+    }
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+ipcMain.on("processFile", async (event, filePath) => {
+  // try {
+  //   const result = await processExcelFile(filePath);
+  //   event.sender.send('excel-file-processed', result);
+  // } catch (error) {
+  //   console.error('Error processing Excel file:', error);
+  //   event.sender.send('excel-file-processed', []);
+  // }
+});
