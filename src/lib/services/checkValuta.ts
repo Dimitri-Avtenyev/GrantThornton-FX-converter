@@ -1,5 +1,4 @@
 import Exceljs, { CellValue, Workbook } from "exceljs";
-import e from "express";
 import { FoundValutaData } from "../types";
 import { format } from "path";
 import { log } from "console";

@@ -5,14 +5,14 @@ import checkValuta, { Finds } from "./checkValuta";
 import { AddData } from "./AddDataInColomn";
 
 
-const INPUT_DIR = "./src/input";
+// const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = "./src/output";
 
 // create workbook instance
-const main = async (workbook: ExcelJs.Workbook) => {
-  const files: string[] = await fs.readdir(INPUT_DIR);
-
-  let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(`${INPUT_DIR}/${files[0]}`);
+const main = async (workbook: ExcelJs.Workbook, path:string) => {
+  // const files: string[] = await fs.readdir(INPUT_DIR);
+  console.log(path);
+  let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(path);
   
   // DEMO firstsheet, find value then write back to xlsx file
   let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];

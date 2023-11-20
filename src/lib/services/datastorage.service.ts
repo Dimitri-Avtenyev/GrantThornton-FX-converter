@@ -1,79 +1,79 @@
-import { dbClient } from "../db";
+// import { dbClient } from "../db";
 import { ExchangeRate, ExchangeRateDict } from "../types";
 import fs from "fs/promises";
 import exrService from "./exr.service";
 
-const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
-  let _data: ExchangeRateDict = {};
-  date = exrService.weekdayCheckAndAdjust(date);
-  let query: string = date.toISOString().split("T")[0];
+// const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
+//   let _data: ExchangeRateDict = {};
+//   date = exrService.weekdayCheckAndAdjust(date);
+//   let query: string = date.toISOString().split("T")[0];
   
-  try {
-    await dbClient.connect();
+//   try {
+//     await dbClient.connect();
 
-    let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({[query]: {$exists:true}});
-    if (!data) {
-      console.log(`No data has been found with for: ${query}, fetching new data from ECB and updating db`);
-      _data = await exrService.getEurRates(date);
-      await saveDbData(_data);
-    } else {
-      _data = data
-    }
-  } catch (err) {
-    console.log(err);
-  } finally {
-    setTimeout(async() => {await dbClient.close()}, 10000)
-  }
-  return _data[query]
-}
+//     let data: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).findOne<ExchangeRateDict>({[query]: {$exists:true}});
+//     if (!data) {
+//       console.log(`No data has been found with for: ${query}, fetching new data from ECB and updating db`);
+//       _data = await exrService.getEurRates(date);
+//       await saveDbData(_data);
+//     } else {
+//       _data = data
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   } finally {
+//     setTimeout(async() => {await dbClient.close()}, 10000)
+//   }
+//   return _data[query]
+// }
 
-const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
-  try {
-    await dbClient.connect();
+// const saveDbData = async (rates: ExchangeRateDict): Promise<void> => {
+//   try {
+//     await dbClient.connect();
 
-    // check if collection is empty
-    let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
-    if (collectionCount === 0) {
-      //data insertion for dict with multiple days of data
-      // convert dict into chuncks of own objects
-      if (Object.keys(rates).length > 1) {
-        const arrRates: ExchangeRateDict[] = [];
-        for (let [key, value] of Object.entries(rates)) {
-          let eurRate: ExchangeRateDict = {
-            [key]: value
-          }
-          arrRates.push(eurRate);
-        }
-        await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertMany(arrRates)
-      } else {
-        //data insertion for dict with one day of data
-        await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertOne(rates);
-      }
+//     // check if collection is empty
+//     let collectionCount: number = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).countDocuments();
+//     if (collectionCount === 0) {
+//       //data insertion for dict with multiple days of data
+//       // convert dict into chuncks of own objects
+//       if (Object.keys(rates).length > 1) {
+//         const arrRates: ExchangeRateDict[] = [];
+//         for (let [key, value] of Object.entries(rates)) {
+//           let eurRate: ExchangeRateDict = {
+//             [key]: value
+//           }
+//           arrRates.push(eurRate);
+//         }
+//         await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertMany(arrRates)
+//       } else {
+//         //data insertion for dict with one day of data
+//         await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertOne(rates);
+//       }
 
-    } else {
-      // if collection is filled -> only add one by one
-      let key = Object.keys(rates)[0]; //  date in ISO format
+//     } else {
+//       // if collection is filled -> only add one by one
+//       let key = Object.keys(rates)[0]; //  date in ISO format
 
-      let duplicate: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!)
-        .findOne<ExchangeRateDict>({ [key]: { $exists: true } });
-      if (duplicate) {
-        console.log(`Document with date: ${key} already exist.`);
-        return;
-      } else if (Object.keys(rates).length > 1) {
-        console.log(`Document with multiple keys, please provide a dict with one key(=date): aborted`);
-        return;
-      }
-      await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertOne(rates)
-    }
+//       let duplicate: ExchangeRateDict | null = await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!)
+//         .findOne<ExchangeRateDict>({ [key]: { $exists: true } });
+//       if (duplicate) {
+//         console.log(`Document with date: ${key} already exist.`);
+//         return;
+//       } else if (Object.keys(rates).length > 1) {
+//         console.log(`Document with multiple keys, please provide a dict with one key(=date): aborted`);
+//         return;
+//       }
+//       await dbClient.db(process.env.MONGODB_DATABASE).collection(process.env.MONGODB_COLLECTION!).insertOne(rates)
+//     }
 
-  } catch (err) {
-    console.log(err);
-  } finally {
-    await dbClient.close();
-  }
-}
+//   } catch (err) {
+//     console.log(err);
+//   } finally {
+//     await dbClient.close();
+//   }
+// }
 
-const getLocalData = async (date: Date): Promise<Promise<ExchangeRate[]>> => {
+const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
   let _data: ExchangeRateDict  = {};
   date = exrService.weekdayCheckAndAdjust(date);
   let query: string | undefined = date?.toISOString().split("T")[0];
@@ -129,7 +129,8 @@ const GetAndStoreRates = async () => {
   dayBefore.setDate(today.getDate() - 1);
 
   const rates: ExchangeRateDict = await exrService.getEurRates(dayBefore);
-  Promise.all([saveDbData(rates), saveLocalData(rates)])
+  await saveLocalData(rates);
+  //Promise.all([saveDbData(rates), saveLocalData(rates)])
 }
 
 const autoGetAndStoreRates = async (time: number) => {
@@ -140,8 +141,8 @@ const autoGetAndStoreRates = async (time: number) => {
   setInterval(GetAndStoreRates, time);
 }
 export default {
-  getDbData,
-  saveDbData,
+  // getDbData,
+  // saveDbData,
   getLocalData,
   saveLocalData,
   GetAndStoreRates,

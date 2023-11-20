@@ -3,7 +3,6 @@ import ExcelJs from "exceljs";
 import { ExchangeRate, FoundValutaData } from "../types";
 import { Finds } from "./checkValuta";
 import datastorageService from "./datastorage.service";
-import { isObject } from "util";
 
 //http://localhost:3000/uploadfile/demo
 
@@ -93,7 +92,7 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
       } else {
         let symbol: string = worksheet.getCell(objectFinds.columnLetterValuta + c.row).text;
         //let fxRates: ExchangeRate[] = await datastorageService.getDbData(invoiceDate);
-        let promise: Promise<void> = datastorageService.getDbData(invoiceDate)
+        let promise: Promise<void> = datastorageService.getLocalData(invoiceDate)
           .then(fxRates => {
             let fxRate: ExchangeRate | undefined = fxRates.find(x => x.symbol === symbol);
             c.value = fxRate?.rate;
@@ -119,7 +118,10 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
     if (worksheet.getCell(objectFinds.columnLetterDate + c.row).type === ExcelJs.ValueType.Date) {
       const totalCell = worksheet.getCell(objectFinds.columnLetterValue + c.row);
       const rateCell = worksheet.getCell(objectFinds.columnLetterRate + c.row);
-      c.value = parseFloat(totalCell.value!.toString()) / parseFloat(rateCell.value!.toString());
+      if(totalCell.value && rateCell.value) {
+        c.value = parseFloat(totalCell.value.toString()) / parseFloat(rateCell.value!.toString());
+      }
+      
     }
   })
   // --- ******************************** --- ///

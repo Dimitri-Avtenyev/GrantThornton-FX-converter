@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (files) {
       // Send a message to the main process to process the Excel file
-      console.log(files[0].name)
+      console.log(files[0].path);
       electronAPI.send('processFile', files[0].path);
     }
   }
