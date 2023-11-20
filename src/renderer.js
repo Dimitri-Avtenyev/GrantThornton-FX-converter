@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const dropArea = document.getElementById('droparea');
+  const dropArea = document.querySelector('.droparea');
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
     dropArea?.addEventListener(eventName, preventDefaults, false);

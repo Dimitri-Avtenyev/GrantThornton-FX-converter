@@ -11,7 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: ("../public/logo.png"),
+    icon: path.join(__dirname, '..', 'public', 'logo.png'),
     webPreferences: {
       nodeIntegration: false, 
       preload: __dirname + '/preload.js', 
@@ -35,7 +35,7 @@ app.whenReady().then(() => {
   });
 
   if (process.platform === 'darwin') {
-    app.dock.setIcon("../public/logo.png");
+    app.dock.setIcon(path.join(__dirname, '..', 'public', 'logo.png'));
   }
 });
 
