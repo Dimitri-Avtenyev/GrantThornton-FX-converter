@@ -1,0 +1,15 @@
+{
+  "name": "grantthornton-fx-converter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ./src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dimitri Avtenyev",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^27.1.0"
+  }
+}
