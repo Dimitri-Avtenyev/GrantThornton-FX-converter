@@ -7,8 +7,8 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: "GrantThornton FX-converter", 
-        description: "GrantThornton FX-converter"
+        name: "GrantThornton FX converter", 
+        description: "GrantThornton FX converter"
       },
     },
     {
