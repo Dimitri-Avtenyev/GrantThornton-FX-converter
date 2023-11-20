@@ -1,18 +1,20 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const  ExcelJs  = require("exceljs");
 const fs = require("fs");
+const path = require("path");
 const fileHandlerService = require("../dist/lib/services/fileHandler.service");
+const db  = require("../dist/lib/db");
 
-//populateLocalDB()
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: ("../public/logo.png"),
     webPreferences: {
-      nodeIntegration: false, // This is important to disable nodeIntegration in the renderer process
-      preload: __dirname + '/preload.js', // Path to preload script
+      nodeIntegration: false, 
+      preload: __dirname + '/preload.js', 
     },
   });
 
@@ -25,12 +27,16 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
-
+  db.populateLocalDB();
   app.on('activate', () => {
     if (mainWindow === null) {
       createWindow();
     }
   });
+
+  if (process.platform === 'darwin') {
+    app.dock.setIcon("../public/logo.png");
+  }
 });
 
 app.on('window-all-closed', () => {
@@ -42,29 +48,22 @@ app.on('window-all-closed', () => {
 ipcMain.on("processFile", async (event, filePath) => {
 
   try {
-    // Communicate with the additional service for processing
     let workbook = new ExcelJs.Workbook();
     const processedFile = await fileHandlerService.default.main(workbook, filePath);
 
     // Ask the user where to save the processed data
     const savePath = await dialog.showSaveDialog(mainWindow, {
       title: 'Save Processed File',
-      defaultPath: 'proce',
+      defaultPath: 'processed_valuta.xlsx',
       buttonLabel: 'Save',
     });
-
-    // Save the processed data to the selected location
-    // (You need to implement the actual saving logic based on your use case)
-    // For example:
-    fs.writeFileSync(savePath, processedData);
-
+    await workbook.xlsx.writeFile(savePath.filePath);
     console.log('File saved at:', savePath);
 
-    // Optionally, you can send a confirmation back to the renderer process
+    // Optionally, send a confirmation back to the renderer process
     event.sender.send('file-processed-and-saved', savePath);
   } catch (error) {
     console.error('Error processing file:', error);
-    // Optionally, send an error message back to the renderer process
     event.sender.send('file-processing-error', error.message);
   }
 

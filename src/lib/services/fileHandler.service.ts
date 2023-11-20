@@ -9,9 +9,9 @@ import { AddData } from "./AddDataInColomn";
 const OUTPUT_DIR = "./src/output";
 
 // create workbook instance
-const main = async (workbook: ExcelJs.Workbook, path:string) => {
+const main = async (workbook: ExcelJs.Workbook, path:string):Promise<ExcelJs.Workbook> => {
   // const files: string[] = await fs.readdir(INPUT_DIR);
-  console.log(path);
+
   let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(path);
   
   // DEMO firstsheet, find value then write back to xlsx file
@@ -23,7 +23,9 @@ const main = async (workbook: ExcelJs.Workbook, path:string) => {
   let colHeaders: number[] = checkValuta.findDataSet(firstSheet,"K")
   
   await AddData(firstSheet, finds, colHeaders);
-  await workbook.xlsx.writeFile(`${OUTPUT_DIR}/demoVreemdeValuta.xlsx`);
+  // await workbook.xlsx.writeFile(`${path}_PROCESSED.xlsx`);
+  return xlsx;
+  
 }
 
 // demo find value and print location found said value
