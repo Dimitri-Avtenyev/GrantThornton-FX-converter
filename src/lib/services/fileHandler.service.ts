@@ -14,16 +14,23 @@ const main = async (workbook: ExcelJs.Workbook, path:string):Promise<ExcelJs.Wor
 
   let xlsx:ExcelJs.Workbook = await workbook.xlsx.readFile(path);
   
-  // DEMO firstsheet, find value then write back to xlsx file
-  let firstSheet:ExcelJs.Worksheet = xlsx.worksheets[0];
-  firstSheet.getCell("B1").value = "this excel file has been altered as a demo";
+  const promises:Promise<void>[] = [];
+  xlsx.eachSheet(worksheet => {
+    let finds: Finds = checkValuta.findColums(worksheet);
+      console.log(finds.columnLetterValuta);
+     
+      //let beginAndEndValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
+      console.log(`working for: ${worksheet.name}`);
+      //await AddData(worksheet, finds, beginAndEndValues);
+      if (finds.columnLetterValuta) {
+        let beginAndEndValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
+        let promise = AddData(worksheet, finds, beginAndEndValues).then(() =>  console.log(`DONE for: ${worksheet.name}`));
+        promises.push(promise);
+      }
 
-  // findFxValue(firstSheet);
-  let finds: Finds = checkValuta.findColums(firstSheet);
-  let colHeaders: number[] = checkValuta.findDataSet(firstSheet,"K")
-  
-  await AddData(firstSheet, finds, colHeaders);
-  // await workbook.xlsx.writeFile(`${path}_PROCESSED.xlsx`);
+  });
+  await Promise.allSettled(promises);
+
   return xlsx;
   
 }
