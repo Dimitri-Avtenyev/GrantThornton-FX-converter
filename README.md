@@ -3,7 +3,7 @@
 ># Standalone Electron App
 
 ## Overview
-This is a standalone [Electron](https://www.electronjs.org/) application that allows users to perform specific actions, such as processing Excel files and converting them into a desired format. The application is built using Electron, TypeScript, and other technologies.
+This is a standalone [Electron](https://www.electronjs.org/) application that allows users to perform specific actions, such as processing Excel files and converting FX to EUR. The application is built using Electron, TypeScript, and other technologies.
 
 ## Features
 - **Drag and Drop**: Easily drag and drop Excel files onto the application for processing.
