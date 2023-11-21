@@ -11,7 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname, '..', 'public', 'logo.png'),
+    icon: path.join(__dirname, '..', 'public', 'logo'),
     webPreferences: {
       nodeIntegration: false, 
       preload: __dirname + '/preload.js', 
@@ -28,15 +28,14 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
   db.populateLocalDB();
+
   app.on('activate', () => {
     if (mainWindow === null) {
       createWindow();
     }
   });
 
-  if (process.platform === 'darwin') {
-    app.dock.setIcon(path.join(__dirname, '..', 'public', 'logo.png'));
-  }
+
 });
 
 app.on('window-all-closed', () => {
