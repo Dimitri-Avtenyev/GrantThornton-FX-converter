@@ -85,7 +85,7 @@ const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
   // load document, if exists, locally
   try {
     
-    let localData = await fs.readFile(localDataPath + files[0], "utf-8");
+    let localData = await fs.readFile(`${localDataPath}/${files[0]}`, "utf-8");
     if (!localData) {
       console.log("No data present or no such file");
     }

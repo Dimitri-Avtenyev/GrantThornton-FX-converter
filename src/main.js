@@ -27,12 +27,12 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   if (process.platform === 'darwin') {
     app.dock.setIcon(macosIcon);
   };
   createWindow();
-  db.populateLocalDB();
+  await db.populateLocalDB();
 
   app.on('activate', () => {
     if (mainWindow === null) {
