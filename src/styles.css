@@ -14,8 +14,29 @@ body {
   text-align: center;
   cursor: pointer;
 }
-
+.droparea p {
+  color: rgb(88,86,214);
+}
 .droparea.highlight {
   background-color: #aaa;
   border: 2px dashed blue;
+}
+.nameLogo img {
+    width: 300px;
+}
+.description {
+  text-align: center;
+  background-color: rgb(88,86,214);
+  color: white;
+  border-radius: 5px;
+  width: 750px;
+  margin-top: 10px;
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+.description hr {
+  border-top: 2px solid white;
+  border-radius: 5px;
+  width: 33%;
 }
