@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const fileHandlerService = require("../dist/lib/services/fileHandler.service");
 const db  = require("../dist/lib/db");
+const nativeImage = require("electron").nativeImage;
+const macosIcon = nativeImage.createFromPath(path.join(__dirname,"..", "public", "logo.png"));
 
 let mainWindow;
 
@@ -11,7 +13,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname, '..', 'public', 'logo'),
+    icon: path.join(__dirname,"..", "public", "logo.png"),
     webPreferences: {
       nodeIntegration: false, 
       preload: __dirname + '/preload.js', 
@@ -26,6 +28,9 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  if (process.platform === 'darwin') {
+    app.dock.setIcon(macosIcon);
+  };
   createWindow();
   db.populateLocalDB();
 

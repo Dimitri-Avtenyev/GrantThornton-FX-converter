@@ -1,7 +1,7 @@
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: "/public/logo.ico"
+    icon: "public/logo_macos.icns"
   },
   rebuildConfig: {},
   makers: [
@@ -9,7 +9,8 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         name: "GrantThornton FX converter", 
-        description: "GrantThornton FX converter"
+        description: "GrantThornton FX converter",
+        iconUrl: "public/logo.png"
       },
     },
     {
