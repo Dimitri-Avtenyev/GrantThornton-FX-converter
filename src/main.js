@@ -3,7 +3,9 @@ const  ExcelJs  = require("exceljs");
 const fs = require("fs");
 const path = require("path");
 const fileHandlerService = require("../dist/lib/services/fileHandler.service");
+const { setLocalDataPath } = require("../dist/lib/services/datastorage.service");
 const db  = require("../dist/lib/db");
+
 const nativeImage = require("electron").nativeImage;
 const macosIcon = nativeImage.createFromPath(path.join(__dirname,"..", "public", "logo.png"));
 
@@ -31,11 +33,12 @@ app.whenReady().then(async () => {
   if (process.platform === 'darwin') {
     app.dock.setIcon(macosIcon);
   };
-  
-  createWindow();
-  await db.populateLocalDB();
-  
 
+  initializePaths();
+  await db.populateLocalDB();
+
+  createWindow();
+  
   app.on('activate', () => {
     if (mainWindow === null) {
       createWindow();
@@ -74,3 +77,16 @@ ipcMain.on("processFile", async (event, filePath) => {
   }
 
 });
+
+
+function initializePaths () {
+  const userDataPath = app.getPath("userData");
+  const localDataPath = path.join(userDataPath, "localData");
+  if (!fs.existsSync(localDataPath)) {
+    console.log("No folder present, creating...");
+    fs.mkdirSync(localDataPath);
+  }
+  console.log("Folder already exists, continue...");
+  setLocalDataPath(localDataPath);
+
+}

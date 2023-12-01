@@ -57,6 +57,7 @@ export const populateLocalDB = async (): Promise<boolean> => {
   if (populateddDb) {
     return false;
   }
+  console.log("populating local db...");
   const endPeriod: Date = new Date();
   const startPeriod: Date = new Date();
   startPeriod.setFullYear(startPeriod.getFullYear() - 1);

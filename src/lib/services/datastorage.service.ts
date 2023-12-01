@@ -4,8 +4,13 @@ import fs from "fs/promises";
 import path from "path";
 import exrService from "./exr.service";
 
+// local folder or electron package userData
+
 let localDataPath:string = path.join(__dirname, "..", "localData");
 
+export function setLocalDataPath(newPath:string) {
+  localDataPath = newPath;
+}
 // const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
 //   let _data: ExchangeRateDict = {};
 //   date = exrService.weekdayCheckAndAdjust(date);
@@ -104,6 +109,7 @@ const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
 const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   //todo add max collection -> ~250 entries -> overwrite most old entry
   const files: string[] = await fs.readdir(localDataPath);
+  
   if (files[0] !== "eurRates.json") {
     await fs.writeFile(`${localDataPath}/eurRates.json`, JSON.stringify(rates), "utf-8");
     return console.log(`file saved in ${localDataPath}`); 
