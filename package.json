@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "start": "tsc && electron-forge start",
-    "make": "electron-forge make",
+    "start": "npm run build && electron-forge start",
+    "make": "npm run build && electron-forge make",
+    "build": "tsc && mkdir -p dist/lib/localData",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package"
   },

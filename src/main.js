@@ -31,8 +31,10 @@ app.whenReady().then(async () => {
   if (process.platform === 'darwin') {
     app.dock.setIcon(macosIcon);
   };
+  
   createWindow();
   await db.populateLocalDB();
+  
 
   app.on('activate', () => {
     if (mainWindow === null) {

@@ -17,10 +17,8 @@ const main = async (workbook: ExcelJs.Workbook, path:string):Promise<ExcelJs.Wor
   const promises:Promise<void>[] = [];
   xlsx.eachSheet(worksheet => {
     let finds: Finds = checkValuta.findColums(worksheet);
-      console.log(finds.columnLetterValuta);
-     
-      //let beginAndEndValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
-      console.log(`working for: ${worksheet.name}`);
+    
+      console.log(`work started for: ${worksheet.name}`);
       //await AddData(worksheet, finds, beginAndEndValues);
       if (finds.columnLetterValuta) {
         let beginAndEndValues = checkValuta.findDataSet(worksheet, finds.columnLetterValuta);
