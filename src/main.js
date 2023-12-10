@@ -119,14 +119,19 @@ ipcMain.on("processFile", async (event, filePath) => {
       defaultPath: 'processed_valuta.xlsx',
       buttonLabel: 'Save',
     });
+    if(savePath.canceled) {
+      event.sender.send('resetMessage');
+    }
     await workbook.xlsx.writeFile(savePath.filePath);
     console.log('File saved at:', savePath);
-
+  
     // Optionally, send a confirmation back to the renderer process
     event.sender.send('file-processed-and-saved', savePath);
+    event.sender.send('resetMessage');
   } catch (error) {
     console.error('Error processing file:', error);
     event.sender.send('file-processing-error', error.message);
+    event.sender.send('resetMessage');
   }
 
 });
@@ -146,62 +151,3 @@ function initializePaths () {
 ipcMain.on('try-connection-again', () => {
   checkConnectionAndShowView();
 });
-
-// example create window while loading
-// const { app, BrowserWindow } = require('electron');
-
-// let mainWindow;
-
-// function createMainWindow() {
-//   mainWindow = new BrowserWindow({ width: 800, height: 600 });
-  
-//   mainWindow.loadFile('index.html');
-  
-//   // Uncomment the line below if you want to open the DevTools initially
-//   // mainWindow.webContents.openDevTools();
-
-//   // Handle the window being closed
-//   mainWindow.on('closed', () => {
-//     mainWindow = null;
-//   });
-// }
-
-// function createLoadingWindow() {
-//   const loadingWindow = new BrowserWindow({ width: 400, height: 300, frame: false, transparent: true });
-  
-//   loadingWindow.loadFile('loading.html');
-  
-//   // Uncomment the line below if you want to open the DevTools initially
-//   // loadingWindow.webContents.openDevTools();
-
-//   loadingWindow.on('closed', () => {
-//     loadingWindow = null;
-//   });
-
-//   return loadingWindow;
-// }
-
-// app.whenReady().then(() => {
-//   const loadingWindow = createLoadingWindow();
-
-//   // Your "populatedb" logic here (example setTimeout)
-//   setTimeout(() => {
-//     // Once the process is complete, close the loading window and open the main window
-//     loadingWindow.close();
-//     createMainWindow();
-//   }, 5000); // Replace 5000 with the actual time your "populatedb" process takes
-
-//   // Additional logic or event handling can be added here
-// });
-
-// app.on('window-all-closed', () => {
-//   if (process.platform !== 'darwin') {
-//     app.quit();
-//   }
-// });
-
-// app.on('activate', () => {
-//   if (mainWindow === null) {
-//     createMainWindow();
-//   }
-// });

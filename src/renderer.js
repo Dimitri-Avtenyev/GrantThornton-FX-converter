@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
   async function handleDrop(e) {
     e.preventDefault();
     unhighlight();
+    dropArea.innerHTML = '<p>Processing...</p>';
     const files = e.dataTransfer?.files;
 
     if (files) {
@@ -39,4 +40,10 @@ window.addEventListener('DOMContentLoaded', () => {
       electronAPI.send('processFile', files[0].path);
     }
   }
+
+  electronAPI.receive("resetMessage", () => {
+    dropArea.innerHTML = '<p>Drag & drop</p>';
+  });
 });
+
+
