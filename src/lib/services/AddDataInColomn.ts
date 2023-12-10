@@ -1,17 +1,8 @@
 
 import ExcelJs from "exceljs";
-import { ExchangeRate, FoundValutaData } from "../types";
+import { ExchangeRate } from "../types";
 import { Finds } from "./checkValuta";
 import datastorageService from "./datastorage.service";
-
-//http://localhost:3000/uploadfile/demo
-
-// let object : Finds = {} as Finds;  
-//   object = checkValuta.findColums(firstSheet); 
-//   let beginAndEndValues = checkValuta.findDataSet(firstSheet, object.columnLetterValuta)
-
-//   mainTestAddData(firstSheet, object, beginAndEndValues);
-
 
 export const AddData = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, columnHeaders: number[]): Promise<void> => {
   let colNumber:number = worksheet.getColumn(objectFinds.columnLetterValue).number;
@@ -48,23 +39,8 @@ const copyColumnStyle = (worksheet: ExcelJs.Worksheet, keyCopyFromColumn: string
 
 const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds, beginAndEndValues: number[]): Promise<void> => {
   //CurrencyRate
-  //const rateColumn = worksheet.getColumn(objectFinds.columnLetterRate); // K? L
-  // for (let i = 0; i < worksheet.rowCount; i++) {
-  //     if (worksheet.getCell(objectFinds.columnLetterDate + i).type == ExcelJs.ValueType.Date) {
-  //         if(worksheet.getCell(objectFinds.columnLetterValuta+ i).value=== "EUR"){
-  //             worksheet.getCell(objectFinds.columnLetterRate+ i).value = 1;
-  //         }else{
-  //             let rates:ExchangeRate[] = await datastorageService.getLocalData(worksheet.getCell(objectFinds.columnLetterDate + i).value as Date);
-  //             let excRate:ExchangeRate|undefined  = rates.find( x => x.symbol === worksheet.getCell(objectFinds.columnLetterValuta + i).text);
-  //             console.log(excRate?.rate);
-  //             worksheet.getCell(objectFinds.columnLetterRate+ i).value = excRate?.rate;
 
-  //         }
-  //     }
-  // }
-
-
-  // --- ~D --- ///
+  // --- ~Dimitri --- ///
   // --- ******************************** --- ///
 
   let rateColumn: string = "";
@@ -126,16 +102,16 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
     }
   })
   // --- ******************************** --- ///
-  for (let i = 0; i < worksheet.rowCount; i++) {
-    if (worksheet.getCell(objectFinds.columnLetterDate + i).type == ExcelJs.ValueType.Date) {
-      // let rate = parseInt(worksheet.getCell(objectFinds.columnLetterRate).text); 
-      // let value = parseInt(worksheet.getCell(objectFinds.columnLetterValue).text); 
-      // worksheet.getCell(objectFinds.columnLetterConversion +i ).value = value*rate; 
-      //    worksheet.getCell(objectFinds.columnLetterConversion + i).value = worksheet.getCell(objectFinds.columnLetterValue +i).value as number * 1.4694
-      // worksheet.getCell(objectFinds.columnLetterConversion + i).value = {sharedFormula :`${objectFinds.columnLetterValue + i}*${objectFinds.columnLetterRate+i}`, result:0};  
+  // for (let i = 0; i < worksheet.rowCount; i++) {
+  //   if (worksheet.getCell(objectFinds.columnLetterDate + i).type == ExcelJs.ValueType.Date) {
+  //     // let rate = parseInt(worksheet.getCell(objectFinds.columnLetterRate).text); 
+  //     // let value = parseInt(worksheet.getCell(objectFinds.columnLetterValue).text); 
+  //     // worksheet.getCell(objectFinds.columnLetterConversion +i ).value = value*rate; 
+  //     //    worksheet.getCell(objectFinds.columnLetterConversion + i).value = worksheet.getCell(objectFinds.columnLetterValue +i).value as number * 1.4694
+  //     // worksheet.getCell(objectFinds.columnLetterConversion + i).value = {sharedFormula :`${objectFinds.columnLetterValue + i}*${objectFinds.columnLetterRate+i}`, result:0};  
 
-    }
-  }
+  //   }
+  // }
   for (let num of beginAndEndValues) {
     worksheet.getCell(objectFinds.columnLetterConversion + num).value = "Conversion"; // M
   }

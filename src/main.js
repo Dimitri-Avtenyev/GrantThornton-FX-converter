@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, net } = require('electron');
 const  ExcelJs  = require("exceljs");
 const fs = require("fs");
 const path = require("path");
