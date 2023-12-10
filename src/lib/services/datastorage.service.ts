@@ -87,10 +87,11 @@ const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
   let query: string | undefined = date?.toISOString().split("T")[0];
 
   const files: string[] = await fs.readdir(localDataPath);
+  const jsonFile = files.find(fileName => fileName === "eurRates.json");
   // load document, if exists, locally
   try {
     
-    let localData = await fs.readFile(`${localDataPath}/${files[0]}`, "utf-8");
+    let localData = await fs.readFile(`${localDataPath}/${jsonFile}`, "utf-8");
     if (!localData) {
       console.log("No data present or no such file");
     }
@@ -109,12 +110,13 @@ const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
 const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
 
   const files: string[] = await fs.readdir(localDataPath);
-  
-  if (files[0] !== "eurRates.json") {
+  const jsonFile = files.find(fileName => fileName === "eurRates.json");
+
+  if (!jsonFile) {
     await fs.writeFile(`${localDataPath}/eurRates.json`, JSON.stringify(rates), "utf-8");
     return console.log(`file saved in ${localDataPath}`); 
   }
-  let data: string = await fs.readFile(`${localDataPath}/${files[0]}`, "utf-8");
+  let data: string = await fs.readFile(`${localDataPath}/${jsonFile}`, "utf-8");
   let eurRatesJson: ExchangeRateDict = JSON.parse(data);
   
 // multiple keys (as ISO date) -> add to existing json
@@ -129,7 +131,7 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   }
 
   await fs.writeFile(`${localDataPath}/eurRates.json`, JSON.stringify(eurRatesJson), "utf-8" );
-  console.log(`file '${files[0]}' updated in ${localDataPath}`);
+  console.log(`file '${jsonFile}' updated in ${localDataPath}`);
 
 }
 

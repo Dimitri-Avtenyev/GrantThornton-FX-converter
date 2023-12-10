@@ -62,12 +62,12 @@ const AddDataInColomn = async (worksheet: ExcelJs.Worksheet, objectFinds: Finds,
   column.eachCell(async c => {
     if (worksheet.getCell(objectFinds.columnLetterDate + c.row).type === ExcelJs.ValueType.Date) {
       let invoiceDate: Date = worksheet.getCell(objectFinds.columnLetterDate + c.row).value as Date;
-
-      if (worksheet.getCell(objectFinds.columnLetterValuta + c.row).value === "EUR") {
+      console.log(worksheet.getCell(objectFinds.columnLetterValuta + c.row).text.toUpperCase())
+      if (worksheet.getCell(objectFinds.columnLetterValuta + c.row).text.toUpperCase() === "EUR") {
         c.value = 1;
 
       } else {
-        let symbol: string = worksheet.getCell(objectFinds.columnLetterValuta + c.row).text;
+        let symbol: string = worksheet.getCell(objectFinds.columnLetterValuta + c.row).text.toUpperCase();
         //let fxRates: ExchangeRate[] = await datastorageService.getDbData(invoiceDate);
         let promise: Promise<void> = datastorageService.getLocalData(invoiceDate)
           .then(fxRates => {
