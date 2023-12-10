@@ -10,6 +10,7 @@ const nativeImage = require("electron").nativeImage;
 const macosIcon = nativeImage.createFromPath(path.join(__dirname,"..", "public", "logo.png"));
 
 let mainWindow;
+let loadingWindow;
 let errorNetworkWindow;
 
 function createWindow() {
@@ -27,6 +28,23 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+}
+function createLoadingWindow() {
+  loadingWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    icon: path.join(__dirname,"..", "public", "logo.png"),
+    webPreferences: {
+      nodeIntegration: false, 
+      preload: __dirname + '/preload.js', 
+    },
+  });
+
+  loadingWindow.loadFile(path.join(__dirname, 'views', 'loading', 'loading.html'));
+
+  loadingWindow.on('closed', () => {
+    loadingWindow = null;
   });
 }
 function createErrorNetworkWindow() {
@@ -58,7 +76,9 @@ async function checkConnectionAndShowView() {
     if (errorNetworkWindow) {
       errorNetworkWindow.close();
     }
+    createLoadingWindow();
     await db.populateLocalDB();
+    loadingWindow.close();
     createWindow();
   }
   
