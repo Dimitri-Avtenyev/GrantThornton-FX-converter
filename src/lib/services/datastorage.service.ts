@@ -6,7 +6,7 @@ import exrService from "./exr.service";
 
 // local folder or electron package userData
 
-let localDataPath:string = path.join(__dirname, "..", "localData");
+export let localDataPath:string = path.join(__dirname, "..", "localData");
 
 export function setLocalDataPath(newPath:string) {
   localDataPath = newPath;
@@ -107,7 +107,7 @@ const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
 }
 
 const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
-  //todo add max collection -> ~250 entries -> overwrite most old entry
+
   const files: string[] = await fs.readdir(localDataPath);
   
   if (files[0] !== "eurRates.json") {
@@ -116,7 +116,7 @@ const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
   }
   let data: string = await fs.readFile(`${localDataPath}/${files[0]}`, "utf-8");
   let eurRatesJson: ExchangeRateDict = JSON.parse(data);
-
+  
 // multiple keys (as ISO date) -> add to existing json
   if (Object.keys(rates).length > 1) {
     for (let [key, value] of Object.entries(rates)) {

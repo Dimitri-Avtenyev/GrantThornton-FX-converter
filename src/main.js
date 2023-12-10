@@ -55,7 +55,6 @@ async function checkConnectionAndShowView() {
       createErrorNetworkWindow();
     }
   } else {
-    console.log("online, trying again");
     if (errorNetworkWindow) {
       errorNetworkWindow.close();
     }
