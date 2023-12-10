@@ -75,7 +75,7 @@ export const populateLocalDB = async (): Promise<boolean> => {
     let diff = today - oldestDate;
     const twoYearsInMilliseconds: number = 2 * 365 * 24 * 60 * 60 * 1000;
     // if there are more than 700 and it's older than 2 years -> refresh file with new one
-    if (Object.keys(eurRatesJson).length > 700 || diff > twoYearsInMilliseconds) {
+    if (Object.keys(eurRatesJson).length > 700 && diff > twoYearsInMilliseconds) {
       try {
         console.log("File too big and/or too old, repopulating local db...");
         fs.unlink(`${localDataPath}/eurRates.json`);
