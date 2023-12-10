@@ -62,9 +62,14 @@ export const populateLocalDB = async (): Promise<boolean> => {
   const startPeriod: Date = new Date();
   startPeriod.setFullYear(startPeriod.getFullYear() - 1);
 
-  let rates: ExchangeRateDict = await exrService.getEurRates(startPeriod, endPeriod);
-  await datastorageService.saveLocalData(rates);
-  populateddDb = true;
+  try {
+    let rates: ExchangeRateDict = await exrService.getEurRates(startPeriod, endPeriod);
+    await datastorageService.saveLocalData(rates);
+    populateddDb = true;
+  } catch (err) {
+    console.log(err);
+  }
+
 
   return true;
 }
