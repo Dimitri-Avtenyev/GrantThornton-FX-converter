@@ -41,9 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  electronAPI.receive("resetMessage", () => {
+  electronAPI.receive('resetMessage', () => {
     dropArea.innerHTML = '<p>Drag & drop</p>';
   });
 });
-
-

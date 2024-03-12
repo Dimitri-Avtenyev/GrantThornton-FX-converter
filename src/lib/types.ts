@@ -1,14 +1,14 @@
 // EXR
 export interface ExchangeRateDict {
-  [date:string] : ExchangeRate[]
+  [date: string]: ExchangeRate[];
 }
 export interface ExchangeRate {
   symbol: string;
-  rate:   number;
+  rate: number;
 }
 
 export interface FoundValutaData {
-  location: string;  
+  location: string;
   valuta: string;
   value: number;
   date: Date;
@@ -26,9 +26,12 @@ export interface ExchangeRateData {
   dataSets: {
     action: string;
     validFrom: string;
-    series: Record<string, {
-      observations: Record<string, number[]>;
-    }>;
+    series: Record<
+      string,
+      {
+        observations: Record<string, number[]>;
+      }
+    >;
   }[];
   structure: {
     links: {
@@ -60,4 +63,3 @@ export interface ExchangeRateData {
     };
   };
 }
-
