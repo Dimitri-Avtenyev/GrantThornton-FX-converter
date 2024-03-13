@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && electron-forge start",
     "make": "npm run build && electron-forge make",
-    "build": "tsc && mkdir -p dist/lib/localData",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package"
   },
