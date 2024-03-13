@@ -20,26 +20,9 @@ jobs:
           node-version: '20'
 
       - name: install dependencies
-        run: npm install
+        run: npm ci
 
       - name: create release
-        id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./out/*
-          asset_name: my-app-${{ github.ref }}-${{ runner.os }}.zip
-          asset_content_type: application/zip
+        run: npm run publish
