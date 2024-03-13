@@ -15,7 +15,7 @@ jobs:
           node-version: '20'
 
       - name: install dependencies
-        run: npm install
+        run: npm ci
 
       - name: build
         run: npm run make
@@ -32,7 +32,7 @@ jobs:
           node-version: '20'
 
       - name: install dependencies
-        run: npm install
+        run: npm ci
 
       - name: build
-        run: npm run make:win
+        run: npm run make

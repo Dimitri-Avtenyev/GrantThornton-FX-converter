@@ -33,6 +33,7 @@ module.exports = {
           owner: 'Dimitri-Avtenyev',
           name: 'GrantThornton-FX-converter',
         },
+        prerelease: true,
       },
     },
   ],
