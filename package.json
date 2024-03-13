@@ -5,8 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "npm run build && electron-forge start",
-    "make": "npm run build && electron-forge make",
-    "make:win": "electron-forge make",
+    "make": "electron-forge make",
     "build": "tsc",
     "publish": "electron-forge publish",
     "test": "echo \"Error: no test specified\" && exit 1",
