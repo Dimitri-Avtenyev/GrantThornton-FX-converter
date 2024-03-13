@@ -5,14 +5,14 @@ module.exports = {
   },
   rebuildConfig: {},
   makers: [
-    {
-      name: '@electron-forge/maker-squirrel',
-      config: {
-        name: 'GrantThorntonFXconverter',
-        description: 'GrantThornton FX converter',
-        iconUrl: 'public/logo.png',
-      },
-    },
+    // {
+    //   name: '@electron-forge/maker-squirrel',
+    //   config: {
+    //     name: 'GrantThorntonFXconverter',
+    //     description: 'GrantThornton FX converter',
+    //     iconUrl: 'public/logo.png',
+    //   },
+    // },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin', 'win32'],
