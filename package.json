@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npm run build && electron-forge start",
     "make": "npm run build && electron-forge make",
+    "make:win": "electron-forge make",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package"
