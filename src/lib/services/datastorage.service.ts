@@ -11,6 +11,8 @@ export let localDataPath: string = path.join(__dirname, '..', 'localData');
 export function setLocalDataPath(newPath: string) {
   localDataPath = newPath;
 }
+let _data: ExchangeRateDict = {};
+
 // const getDbData = async (date: Date): Promise<ExchangeRate[]> => {
 //   let _data: ExchangeRateDict = {};
 //   date = exrService.weekdayCheckAndAdjust(date);
@@ -82,62 +84,32 @@ export function setLocalDataPath(newPath: string) {
 // }
 
 const getLocalData = async (date: Date): Promise<ExchangeRate[]> => {
-  let _data: ExchangeRateDict = {};
   date = exrService.weekdayCheckAndAdjust(date);
   let query: string | undefined = date?.toISOString().split('T')[0];
 
-  const files: string[] = await fs.readdir(localDataPath);
-  const jsonFile = files.find((fileName) => fileName === 'eurRates.json');
-  // load document, if exists, locally
-  try {
-    let localData = await fs.readFile(`${localDataPath}/${jsonFile}`, 'utf-8');
-    if (!localData) {
-      console.log('No data present or no such file');
-    }
-    _data = JSON.parse(localData);
-  } catch (err) {
-    console.log(err);
-  }
   if (!_data || !_data[query]) {
-    _data = await exrService.getEurRates(date);
-    await saveLocalData(_data);
+    const newData = await exrService.getEurRates(date);
+    await saveLocalData(newData);
+
+    return newData[query];
   }
 
-  return _data[query];
+  return _data[query] || [];
 };
 
 const saveLocalData = async (rates: ExchangeRateDict): Promise<void> => {
-  const files: string[] = await fs.readdir(localDataPath);
-  const jsonFile = files.find((fileName) => fileName === 'eurRates.json');
-
-  if (!jsonFile) {
-    await fs.writeFile(
-      `${localDataPath}/eurRates.json`,
-      JSON.stringify(rates),
-      'utf-8',
-    );
-    return console.log(`file saved in ${localDataPath}`);
-  }
-  let data: string = await fs.readFile(`${localDataPath}/${jsonFile}`, 'utf-8');
-  let eurRatesJson: ExchangeRateDict = JSON.parse(data);
-
   // multiple keys (as ISO date) -> add to existing json
   if (Object.keys(rates).length > 1) {
     for (let [key, value] of Object.entries(rates)) {
-      eurRatesJson[key] = value;
+      _data[key] = value;
     }
   } else {
     // single key (as ISO date) -> add to existing json
     let keyDate: string = Object.keys(rates)[0];
-    eurRatesJson[keyDate] = rates[keyDate];
+    if (!_data[keyDate]) {
+      _data[keyDate] = rates[keyDate];
+    }
   }
-
-  await fs.writeFile(
-    `${localDataPath}/eurRates.json`,
-    JSON.stringify(eurRatesJson),
-    'utf-8',
-  );
-  console.log(`file '${jsonFile}' updated in ${localDataPath}`);
 };
 
 const GetAndStoreRates = async () => {
@@ -157,6 +129,33 @@ const autoGetAndStoreRates = async (time: number) => {
   }
   setInterval(GetAndStoreRates, time);
 };
+
+export const loadLocalFile = async (): Promise<void> => {
+  const files: string[] = await fs.readdir(localDataPath);
+  const jsonFile = files.find((fileName) => fileName === 'eurRates.json');
+
+  // load document, if exists, locally
+  try {
+    let localData = await fs.readFile(`${localDataPath}/${jsonFile}`, 'utf-8');
+    _data = JSON.parse(localData);
+    console.log('json parsed');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const saveLocalFile = async () => {
+  const files: string[] = await fs.readdir(localDataPath);
+  const jsonFile = files.find((fileName) => fileName === 'eurRates.json');
+
+  await fs.writeFile(
+    `${localDataPath}/eurRates.json`,
+    JSON.stringify(_data),
+    'utf-8',
+  );
+  console.log(`file '${jsonFile}' saved in ${localDataPath}`);
+};
+
 export default {
   // getDbData,
   // saveDbData,

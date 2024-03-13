@@ -1,6 +1,7 @@
 // import { MongoClient } from "mongodb";
 import datastorageService, {
   localDataPath,
+  saveLocalFile,
 } from './services/datastorage.service';
 import exrService from './services/exr.service';
 import { ExchangeRateDict } from './types';
@@ -116,6 +117,7 @@ export const populateLocalDB = async (): Promise<boolean> => {
         endPeriod,
       );
       await datastorageService.saveLocalData(rates);
+      await saveLocalFile();
       populateddDb = true;
     } catch (err) {
       console.log(err);

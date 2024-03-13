@@ -1,8 +1,8 @@
 import ExcelJs from 'exceljs';
-import fs from 'fs/promises';
 import path from 'path';
 import checkValuta, { Finds } from './checkValuta';
 import { AddData } from './AddDataInColomn';
+import { loadLocalFile, saveLocalFile } from './datastorage.service';
 
 // const INPUT_DIR = "./src/input";
 const OUTPUT_DIR = './src/output';
@@ -12,15 +12,14 @@ const main = async (
   workbook: ExcelJs.Workbook,
   path: string,
 ): Promise<ExcelJs.Workbook> => {
-  // const files: string[] = await fs.readdir(INPUT_DIR);
-
   let xlsx: ExcelJs.Workbook = await workbook.xlsx.readFile(path);
+  await loadLocalFile();
 
   const promises: Promise<void>[] = [];
+
   xlsx.eachSheet((worksheet) => {
     let finds: Finds = checkValuta.findColums(worksheet);
 
-    console.log(`work started for: ${worksheet.name}`);
     //await AddData(worksheet, finds, beginAndEndValues);
     if (finds.columnLetterValuta) {
       let beginAndEndValues = checkValuta.findDataSet(
@@ -34,6 +33,7 @@ const main = async (
     }
   });
   await Promise.allSettled(promises);
+  await saveLocalFile();
 
   return xlsx;
 };
