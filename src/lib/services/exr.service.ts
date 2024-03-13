@@ -82,24 +82,26 @@ const atLeastOneDayOlder = (date: Date): boolean => {
   return timeDiff > DAY_IN_MILLISECONDS;
 };
 const weekdayCheckAndAdjust = (date: Date): Date => {
-  const dayOfWeek: number = date.getDay();
-  if (!atLeastOneDayOlder(date)) {
+  const dateCpy: Date = new Date(date);
+  const dayOfWeek: number = dateCpy.getDay();
+
+  if (!atLeastOneDayOlder(dateCpy)) {
     console.log(
-      `${date} is too recent(needs to be at least one day older), no data yet, adjusting...`,
+      `${dateCpy} is too recent(needs to be at least one day older), no data yet, adjusting...`,
     );
-    date.setDate(date.getDate() - 1);
+    dateCpy.setDate(dateCpy.getDate() - 1);
   }
   if (dayOfWeek === 0) {
     // sunday -> substract one day
-    console.log(`${date} is on sunday, adjusting...`);
-    date.setDate(date.getDate() - 2);
+    console.log(`${dateCpy} is on sunday, adjusting...`);
+    dateCpy.setDate(dateCpy.getDate() - 2);
   } else if (dayOfWeek === 6) {
     // saturdat -> substract two days
-    console.log(`${date} is on saturday, adjusting...`);
-    date.setDate(date.getDate() - 1);
+    console.log(`${dateCpy} is on saturday, adjusting...`);
+    dateCpy.setDate(dateCpy.getDate() - 1);
   }
 
-  return date;
+  return dateCpy;
 };
 export default {
   getEurRates,

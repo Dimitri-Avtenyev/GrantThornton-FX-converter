@@ -88,7 +88,7 @@ const AddDataInColomn = async (
       worksheet.getCell(objectFinds.columnLetterDate + c.row).type ===
       ExcelJs.ValueType.Date
     ) {
-      let invoiceDate: Date = worksheet.getCell(
+      const invoiceDate: Date = worksheet.getCell(
         objectFinds.columnLetterDate + c.row,
       ).value as Date;
 
@@ -103,8 +103,13 @@ const AddDataInColomn = async (
           .getCell(objectFinds.columnLetterValuta + c.row)
           .text.toUpperCase();
 
+        // as per request -> date should be 1 day before the invoiceDate
+
+        let oneDayBeforeInvoiceDate: Date = new Date(invoiceDate);
+        oneDayBeforeInvoiceDate.setDate(oneDayBeforeInvoiceDate.getDate() - 1);
+
         let promise: Promise<void> = datastorageService
-          .getLocalData(invoiceDate)
+          .getLocalData(oneDayBeforeInvoiceDate)
           .then((fxRates) => {
             let fxRate: ExchangeRate | undefined = fxRates.find(
               (x) => x.symbol === symbol,
